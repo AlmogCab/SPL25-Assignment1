@@ -37,7 +37,7 @@ double WAVTrack::get_quality_score() const {
     // NOTE: Use exactly 2 spaces before each arrow (→) character
     // NOTE: Cast beats to integer when printing
     double base_score = 70.0;
-    if(sample_rate >= 9600){
+    if(sample_rate >= 96000){
         base_score += 15.0;
     }
     else if(sample_rate >= 44100){
@@ -57,5 +57,4 @@ double WAVTrack::get_quality_score() const {
 
 PointerWrapper<AudioTrack> WAVTrack::clone() const {
     // TODO: Implement the clone method
-    return PointerWrapper<AudioTrack>(nullptr); // Replace with your implementation
-}
+    return PointerWrapper<AudioTrack>(new WAVTrack(*this));}
