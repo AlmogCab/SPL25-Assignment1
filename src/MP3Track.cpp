@@ -1,138 +1,61 @@
-#include "AudioTrack.h"
+#include "MP3Track.h"
 #include <iostream>
-#include <cstring>
-#include <random>
+#include <cmath>
+#include <algorithm>
 
-AudioTrack::AudioTrack(const std::string& title, const std::vector<std::string>& artists, 
-                      int duration, int bpm, size_t waveform_samples)
-    : title(title), artists(artists), duration_seconds(duration), bpm(bpm), 
-      waveform_size(waveform_samples) {
+MP3Track::MP3Track(const std::string& title, const std::vector<std::string>& artists, 
+                   int duration, int bpm, int bitrate, bool has_tags)
+    : AudioTrack(title, artists, duration, bpm), bitrate(bitrate), has_id3_tags(has_tags) {
 
-    // Allocate memory for waveform analysis
-    waveform_data = new double[waveform_size];
+    std::cout << "MP3Track created: " << bitrate << " kbps" << std::endl;
+}
 
-    // Generate some dummy waveform data for testing
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<double> dis(-1.0, 1.0);
+// ========== TODO: STUDENTS IMPLEMENT THESE VIRTUAL FUNCTIONS ==========
 
-    for (size_t i = 0; i < waveform_size; ++i) {
-        waveform_data[i] = dis(gen);
+void MP3Track::load() {
+    std::cout << "[MP3Track::load] Loading MP3: \"" << title
+              << "\" at " << bitrate << " kbps...\n";
+    // TODO: Implement MP3 loading with format-specific operations
+    // NOTE: Use exactly 2 spaces before the arrow (→) character
+    if(has_id3_tags){
+        std::cout << "  → Processing ID3 metadata (artist info, album art, etc.)...\n";
     }
-    #ifdef DEBUG
-    std::cout << "AudioTrack created: " << title << " by " << std::endl;
-    for (const auto& artist : artists) {
-        std::cout << artist << " ";
+    else{
+        std::cout << "  → No ID3 tags found.\n";
     }
-    std::cout << std::endl;
-    #endif
+    std::cout << "  → Decoding MP3 frames...\n";
+    std::cout << "  → Load complete.\n";
 }
 
-// ========== TODO: STUDENTS IMPLEMENT RULE OF 5 ==========
-
-AudioTrack::~AudioTrack() {
-    // TODO: Implement the destructor
-    #ifdef DEBUG
-    std::cout << "AudioTrack destructor called for: " << title << std::endl;
-    #endif
-    // Your code here...
-    delete[] waveform_data;
+void MP3Track::analyze_beatgrid() {
+     std::cout << "[MP3Track::analyze_beatgrid] Analyzing beat grid for: \"" << title << "\"\n";
+    // TODO: Implement MP3-specific beat detection analysis
+    // NOTE: Use exactly 2 spaces before each arrow (→) character
+   int beats_estimated = (duration_seconds / 60.0) * bpm;
+   int precision_factor = bitrate / 320.0;
+    std::cout << "  → Estimated beats: " <<beats_estimated << "  → Compression precision factor: " << precision_factor << "\n";
 }
 
-AudioTrack::AudioTrack(const AudioTrack& other): title(other.title),
-artists(other.artists),duration_seconds(other.duration_seconds),bpm(other.bpm),
-waveform_size(other.waveform_size)
-{
-    // TODO: Implement the copy constructor
-    #ifdef DEBUG
-    std::cout << "AudioTrack copy constructor called for: " << other.title << std::endl;
-    #endif
-    // Your code here... 
-    waveform_data = new double[waveform_size];
-
-    for (size_t i = 0; i < waveform_size; ++i){
-        waveform_data[i] = other.waveform_data[i];
-      }
-}
-
-AudioTrack& AudioTrack::operator=(const AudioTrack& other) {
-    // TODO: Implement the copy assignment operator
-    #ifdef DEBUG
-    std::cout << "AudioTrack copy assignment called for: " << other.title << std::endl;
-    #endif
-    // Your code here...
-    if(&other == this){
-        return *this;
+double MP3Track::get_quality_score() const {
+    // TODO: Implement comprehensive quality scoring
+    // NOTE: This method does NOT print anything
+    double base_score = (bitrate / 320.0) * 100.0;
+    if(has_id3_tags){
+        base_score += 5.0;
     }
-
-    //clean up existing data
-    delete [] waveform_data;
-
-    //copy data from other
-    title = other.title;
-    artists = other.artists;
-    duration_seconds = other.duration_seconds;
-    bpm = other.bpm;
-    waveform_size = other.waveform_size;
-    waveform_data = new double[waveform_size];
-    
-    for (size_t i = 0; i < waveform_size; ++i){
-        waveform_data[i] = other.waveform_data[i];
-      }
-      
-    return *this;
-}
-
-AudioTrack::AudioTrack(AudioTrack&& other) noexcept {
-    // TODO: Implement the move constructor
-    #ifdef DEBUG
-    std::cout << "AudioTrack move constructor called for: " << other.title << std::endl;
-    #endif
-    // Your code here...
-
-    //steal data from other
-    title = other.title;
-    artists = other.artists;
-    duration_seconds = other.duration_seconds;
-    bpm = other.bpm;
-    waveform_size = other.waveform_size;
-    waveform_data = other.waveform_data;
-     
-    //leaving the source in a valid state
-    other.waveform_data = nullptr;
-    other.waveform_size = 0;
-}
-
-AudioTrack& AudioTrack::operator=(AudioTrack&& other) noexcept {
-    // TODO: Implement the move assignment operator
-
-    #ifdef DEBUG
-    std::cout << "AudioTrack move assignment called for: " << other.title << std::endl;
-    #endif
-    // Your code here...
-    if(&other == this){
-        return *this;
+    if(bitrate < 128){
+        base_score -= 10.0;
     }
-    //clean up current data
-    delete [] waveform_data;
-
-    //steal data from other
-    title = other.title;
-    artists = other.artists;
-    duration_seconds = other.duration_seconds;
-    bpm = other.bpm;
-    waveform_size = other.waveform_size;
-    waveform_data = other.waveform_data;
-
-    //reset other
-    other.waveform_data = nullptr;
-    other.waveform_size = 0;
-
-    return *this;
+    if(base_score > 100.0){
+        base_score = 100.0;
+    }
+    else if(base_score < 0.0){
+        base_score = 0.0;
+    }
+    return base_score;
 }
 
-void AudioTrack::get_waveform_copy(double* buffer, size_t buffer_size) const {
-    if (buffer && waveform_data && buffer_size <= waveform_size) {
-        std::memcpy(buffer, waveform_data, buffer_size * sizeof(double));
-    }
+PointerWrapper<AudioTrack> MP3Track::clone() const {
+    // TODO: Implement polymorphic cloning
+    return PointerWrapper<AudioTrack>(new MP3Track(*this));
 }
