@@ -14,8 +14,18 @@
 class DJLibraryService {
 public:
     DJLibraryService(const Playlist& playlist);
-    DJLibraryService() = default;
+    DJLibraryService(): playlist(), library(){}
 
+    //destructor to clean up library tracks
+    ~DJLibraryService();
+
+    //Copy Constructor for rule of 3
+    DJLibraryService(const DJLibraryService& other);
+
+    //Copy Assignment Operator for rule of 3
+    DJLibraryService& operator=(const DJLibraryService& other);
+
+    
     /**
      * @brief Build the track library from parsed config data
      * @param library_tracks Vector of track info from config
