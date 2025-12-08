@@ -12,7 +12,71 @@ Playlist::~Playlist() {
     #ifdef DEBUG
     std::cout << "Destroying playlist: " << playlist_name << std::endl;
     #endif
+
+    PlaylistNode* current = head;
+    while(current!= nullptr){
+        PlaylistNode* next = current->next;
+        delete current->track;
+        delete current;
+        current = next;
+    };
+
+    head = nullptr;
+    track_count = 0;
+
 }
+
+//implement rule of 3 - copy constructor
+Playlist::Playlist(const Playlist& other) {
+
+    playlist_name = other.playlist_name;
+    track_count = other.track_count;
+    if(other.head == nullptr){
+        head = nullptr;
+    }
+    else{
+        head = new PlaylistNode(other.head->track->clone().release());
+        PlaylistNode* current = other.head->next;
+        PlaylistNode* new_current = head;
+        while(current !=nullptr){
+            PlaylistNode* newNode = new PlaylistNode(current->track->clone().release());
+            new_current->next = newNode;
+            new_current = newNode;
+            current = current->next;
+        }
+        new_current->next = nullptr;
+    }  
+}
+
+//implement rule of 3 - copy assignment operator
+Playlist& Playlist::operator=(const Playlist& other){
+    if(this != &other){
+        PlaylistNode* current = this->head;
+        while(current!= nullptr){
+            PlaylistNode* next = current->next;
+            delete current->track;
+            delete current;
+            current = current->next;
+        };
+
+        playlist_name = other.playlist_name;
+        track_count = other.track_count;
+        head = new PlaylistNode(other.head->track->clone().release());
+        PlaylistNode* other_current = other.head->next;
+        PlaylistNode* new_playlist = head;
+        while(other_current !=nullptr){
+            PlaylistNode* newNode = new PlaylistNode(other_current->track->clone().release());
+            new_playlist->next = newNode;
+            new_playlist = newNode;
+            other_current = other_current->next;
+
+        }
+        new_playlist->next = nullptr;
+    }
+    return *this;
+}
+
+
 
 void Playlist::add_track(AudioTrack* track) {
     if (!track) {
@@ -22,7 +86,7 @@ void Playlist::add_track(AudioTrack* track) {
 
     // Create new node - this allocates memory!
     PlaylistNode* new_node = new PlaylistNode(track);
-
+    
     // Add to front of list
     new_node->next = head;
     head = new_node;
@@ -49,7 +113,8 @@ void Playlist::remove_track(const std::string& title) {
         } else {
             head = current->next;
         }
-
+        delete current->track;
+        delete current; 
         track_count--;
         std::cout << "Removed '" << title << "' from playlist" << std::endl;
 
