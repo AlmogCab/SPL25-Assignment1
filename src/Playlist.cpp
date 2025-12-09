@@ -80,10 +80,11 @@ Playlist& Playlist::operator=(const Playlist& other){
             curr = curr->next;
             track_count++;
         }
+    }
     return *this;
 }
 
-void Playlist::add_track(AudioTrack* track) {
+void Playlist::add_track(AudioTrack* track){
     if (!track) {
         std::cout << "[Error] Cannot add null track to playlist" << std::endl;
         return;
