@@ -37,11 +37,8 @@ public:
      * Think about ownership and resource management.
      * Is the default destructor sufficient here?
      */
-    ~PointerWrapper(){
-         if (ptr != nullptr) {
-            delete ptr;
-            ptr = nullptr;
-        }
+    ~PointerWrapper() {
+        delete ptr;
     }
 
     // ========== COPY OPERATIONS (DELETED) ==========
@@ -66,7 +63,7 @@ public:
      * What should happen to the source wrapper after the move?
      */
     PointerWrapper(PointerWrapper&& other) noexcept : ptr(other.ptr) {
-        other.ptr = nullptr; 
+        other.ptr = nullptr;    
     }
 
     /**
@@ -94,7 +91,7 @@ public:
     T& operator*() const {
         if(!ptr){
             throw std::runtime_error("Dereferencing null pointer");
-        }        
+        }
         return *ptr;
     };
 
@@ -117,10 +114,10 @@ public:
      * @throws std::runtime_error if ptr is null
      */
     T* get() const {
-        if(!ptr){
+       if(!ptr){
            throw std::runtime_error("Getting null pointer");
        }
-       return ptr;        
+       return ptr;
     }
 
     // ========== OWNERSHIP MANAGEMENT ==========
@@ -145,9 +142,8 @@ public:
      * What should happen to the old pointer?
      */
     void reset(T* new_ptr = nullptr) {
-        T* temp = ptr;
+        delete ptr;
         ptr = new_ptr;
-        delete temp;
     }
 
     // ========== UTILITY FUNCTIONS ==========
@@ -158,10 +154,10 @@ public:
      * Why might the explicit keyword be important here?
      */
     explicit operator bool() const {
-        if(ptr != nullptr){
+        if(ptr){
             return true;
         }
-        return false;
+        return false; 
     }
 
     /**

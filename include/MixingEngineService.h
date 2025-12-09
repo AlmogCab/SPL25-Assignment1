@@ -10,6 +10,7 @@
 // - After loading to a deck: call track.load(); then analyze_beatgrid(); then switch active deck.
 // - The previously active deck becomes finished and is unloaded immediately.
 class MixingEngineService {
+
 private:
     AudioTrack* decks[2];
     size_t active_deck;
@@ -18,6 +19,9 @@ private:
 public:
     MixingEngineService();
     ~MixingEngineService();
+    MixingEngineService(const MixingEngineService&) = delete;         // Copy constructor
+    MixingEngineService& operator=(const MixingEngineService&) = delete;   // Copy assignment
+    
 
     /** Contract: Load a track to the next deck per instant-transition policy
      * - @param track: reference to a cached track to be cloned for the mixer

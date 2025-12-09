@@ -25,7 +25,7 @@ public:
     //Copy Assignment Operator for rule of 3
     DJLibraryService& operator=(const DJLibraryService& other);
 
-
+    
     /**
      * @brief Build the track library from parsed config data
      * @param library_tracks Vector of track info from config
