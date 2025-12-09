@@ -12,7 +12,7 @@ MixingEngineService::MixingEngineService()
     // Your implementation here
     decks[0] = nullptr;
     decks[1] = nullptr;
-    std::cout << "[MixingEngineService] Initialized with "  << 2  << " empty decks." << std::endl;
+    std::cout << "[MixingEngineService] Initialized with "  << 2  << " empty decks" << std::endl;
 }
 
 /**
@@ -28,7 +28,6 @@ MixingEngineService::~MixingEngineService() {
         }
     }
 }
-
 
 /**
  * TODO: Implement loadTrackToDeck method
@@ -61,12 +60,12 @@ int MixingEngineService::loadTrackToDeck(const AudioTrack& track) {
         int bpm_diff = active_bpm - track_bpm;
         if(bpm_diff < 0) bpm_diff = -bpm_diff;
 
-        if(bpm_diff > bpm_tolerance){
+         if(bpm_diff > bpm_tolerance){
             sync_bpm(cloned_track); 
-            }
+         }
     }
     else{
-        std::cout << "[Sync BPM] Cannot sync - one of the decks is empty.\n";
+                    std::cout << "[Sync BPM] Cannot sync - one of the decks is empty." <<  std::endl;
     }
     decks[target_deck] = cloned_track.release();
     std::cout << "[Load Complete] '" << track.get_title() << "' is now loaded on deck " << target_deck << std::endl;
@@ -119,11 +118,11 @@ bool MixingEngineService::can_mix_tracks(const PointerWrapper<AudioTrack>& track
  */
 void MixingEngineService::sync_bpm(const PointerWrapper<AudioTrack>& track) const {
     // Your implementation here
-    if(decks[active_deck] != nullptr && track.get() != nullptr){       
+    if(decks[active_deck] != nullptr && track){       
         int original_bpm = track->get_bpm();
         int active_bpm = decks[active_deck]->get_bpm();
         int new_bpm = (active_bpm + original_bpm) / 2;
         track->set_bpm(new_bpm);
-        std::cout << "[Sync BPM] Syncing BPM from " << original_bpm << " to " << new_bpm << "\n";
+        std::cout << "[Sync BPM] Syncing BPM from " << original_bpm << " to " << new_bpm << " bpm\n";
     }
 }
