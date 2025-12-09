@@ -82,20 +82,19 @@ AudioTrack& AudioTrack::operator=(const AudioTrack& other) {
     return *this;
 }
 
-AudioTrack::AudioTrack(AudioTrack&& other) noexcept 
-    // TODO: Implement the move constructor
-    #ifdef DEBUG
-    std::cout << "AudioTrack move constructor called for: " << other.title << std::endl;
-    #endif
-    // Your code here...
-    //steal data from other
-    :title(std::move(other.title)),  
+AudioTrack::AudioTrack(AudioTrack&& other) noexcept :title(std::move(other.title)),  
     artists(std::move(other.artists)),
     duration_seconds(other.duration_seconds),   
     bpm(other.bpm),
     waveform_data(other.waveform_data),
     waveform_size(other.waveform_size)
 { 
+    // TODO: Implement the move constructor
+    #ifdef DEBUG
+    std::cout << "AudioTrack move constructor called for: " << other.title << std::endl;
+    #endif
+    // Your code here...
+        
     //leaving the source in a valid state
     other.waveform_data = nullptr;
     other.waveform_size = 0;

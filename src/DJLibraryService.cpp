@@ -53,13 +53,12 @@ DJLibraryService& DJLibraryService::operator=(const DJLibraryService& other) {
  */
 void DJLibraryService::buildLibrary(const std::vector<SessionConfig::TrackInfo>& library_tracks) {
     //Todo: Implement buildLibrary method
-    std::cout << "TODO: Implement DJLibraryService::buildLibrary method\n"<< library_tracks.size() << " tracks to be loaded into library.\n";
     int count = 0;
     for(auto& track_info : library_tracks){
         AudioTrack* created_track = nullptr;
         if(track_info.type == "MP3"){
             created_track = new MP3Track(track_info.title, track_info.artists, track_info.duration_seconds, track_info.bpm, track_info.extra_param1, track_info.extra_param2);
-            std::cout << "MP3Track created: " << track_info.extra_param1 << "kbps" << std::endl;
+            std::cout << "MP3Track created: " << track_info.extra_param1 << " kbps" << std::endl;
         }
         else if(track_info.type == "WAV"){
            created_track = new WAVTrack(track_info.title, track_info.artists, track_info.duration_seconds, track_info.bpm, track_info.extra_param1, track_info.extra_param2);
@@ -70,7 +69,7 @@ void DJLibraryService::buildLibrary(const std::vector<SessionConfig::TrackInfo>&
             count++;
         }
       }
-    std::cout << " [INFO] Track library built: " << count << " tracks loaded " << std::endl;
+    std::cout << "[INFO] Track library built: " << count << " tracks loaded" << std::endl;
  }
 
 /**
@@ -138,7 +137,7 @@ void DJLibraryService::loadPlaylistFromIndices(const std::string& playlist_name,
     }
 
     playlist = new_playlist;
-    std::cout << "[INFO] Playlist loaded: " << playlist_name <<"(" << count << " tracks )" << std::endl;
+    std::cout << "[INFO] Playlist loaded: " << playlist_name <<" (" << count << " tracks)" << std::endl;
   }
 
 /**

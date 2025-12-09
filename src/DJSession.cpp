@@ -79,7 +79,7 @@ int DJSession::load_track_to_controller(const std::string& track_name) {
         stats.errors++;
         return 0;
     }
-    std::cout << "[System] Loading track '" << track_name <<" 'to controller..."<< std::endl;
+    std::cout << "[System] Loading track '" << track_name <<"' to controller..."<< std::endl;
     int cache_result = controller_service.loadTrackToCache(*track);
     controller_service.displayCacheStatus();
     if(cache_result == 1){
@@ -195,7 +195,7 @@ void DJSession::simulate_dj_performance() {
         while(true){
             std::string selected_playlist = display_playlist_menu_from_config();
             if(selected_playlist.empty()){
-                std::cout << "Session cancelled by user." << std::endl;
+                //Session cancelled by user
                 break;
             }
             bool loaded = load_playlist(selected_playlist);
@@ -205,7 +205,7 @@ void DJSession::simulate_dj_performance() {
                 continue;
             }
             for(const auto& track_title : track_titles){
-                std::cout << "\n--- Processing: " << track_title << "--" << std::endl;
+                std::cout << "\n--- Processing: " << track_title << " ---" << std::endl;
                 stats.tracks_processed++;
                 int load_result = load_track_to_controller(track_title);
                 if(load_result == -2){
@@ -222,7 +222,7 @@ void DJSession::simulate_dj_performance() {
             print_session_summary();
         }
     }
-    std::cout << " Session cancelled by user or all playlists played." << std::endl;
+    std::cout << "Session cancelled by user or all playlists played." << std::endl;
 }
 
 

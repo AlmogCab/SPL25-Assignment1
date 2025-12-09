@@ -12,7 +12,7 @@ MixingEngineService::MixingEngineService()
     // Your implementation here
     decks[0] = nullptr;
     decks[1] = nullptr;
-    std::cout << "[MixingEngineService] Initialized with "  << 2  << " empty decks" << std::endl;
+    std::cout << "[MixingEngineService] Initialized with "  << 2  << " empty decks." << std::endl;
 }
 
 /**
@@ -123,6 +123,6 @@ void MixingEngineService::sync_bpm(const PointerWrapper<AudioTrack>& track) cons
         int active_bpm = decks[active_deck]->get_bpm();
         int new_bpm = (active_bpm + original_bpm) / 2;
         track->set_bpm(new_bpm);
-        std::cout << "[Sync BPM] Syncing BPM from " << original_bpm << " to " << new_bpm << " bpm\n";
+        std::cout << "[Sync BPM] Syncing BPM from " << original_bpm << " to " << new_bpm << "\n";
     }
 }
