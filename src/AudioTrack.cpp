@@ -90,8 +90,8 @@ AudioTrack::AudioTrack(AudioTrack&& other) noexcept {
     std::cout << "AudioTrack move constructor called for: " << other.title << std::endl;
     #endif
     // Your code here...
-    title = std::move(other.title);
-    artists = std::move(other.artists);
+    title = other.title;
+    artists = other.artists;
     duration_seconds = other.duration_seconds;
     bpm = other.bpm;
     waveform_size = other.waveform_size;
