@@ -9,25 +9,95 @@ Playlist::Playlist(const std::string& name)
 // TODO: Fix memory leaks!
 // Students must fix this in Phase 1
 Playlist::~Playlist() {
-    #ifdef DEBUG
-    std::cout << "Destroying playlist: " << playlist_name << std::endl;
-    #endif
+   
+    PlaylistNode* curr = head;
+    while (curr) {
+        PlaylistNode* next = curr->next;
+        delete curr->track;
+        delete curr;
+        curr = next;
+    }
+    head = nullptr;
+    track_count = 0;
 }
 
+//copy constructor for rule of 3
+
+Playlist::Playlist(const Playlist& other): head(nullptr),playlist_name(other.playlist_name),track_count(0){
+
+     PlaylistNode* curr = other.head;
+     PlaylistNode* tail = nullptr;
+     
+     while (curr){
+        AudioTrack* track_copy = const_cast<AudioTrack*>(curr->track->clone().release());
+        PlaylistNode* new_node = new PlaylistNode(track_copy);
+        if(head == nullptr){
+            head = new_node;
+        }
+        else{
+           tail->next = new_node;
+        }
+        tail = new_node;
+        curr = curr->next;
+        track_count++;
+    }
+}
+
+    //copy assignment operator for rule of 3
+    Playlist& Playlist::operator=(const Playlist& other){
+    if(&other == this){
+        return *this;
+    }
+    // Clean up existing data
+     PlaylistNode* currToDel = head;
+      while (currToDel) {
+            PlaylistNode* next = currToDel->next;
+            delete currToDel->track;
+            delete currToDel;
+            currToDel = next;
+        }
+        // Reset state
+        head = nullptr;
+        playlist_name = other.playlist_name;
+        track_count = 0;
+
+        // Deep copy from other
+        PlaylistNode* curr = other.head;
+        PlaylistNode* tail = nullptr;
+
+         while (curr){
+        AudioTrack* track_copy = const_cast<AudioTrack*>(curr->track->clone().release());
+        PlaylistNode* new_node = new PlaylistNode(track_copy);
+        if(head == nullptr){
+            head = new_node;
+        }
+        else{
+           tail->next = new_node;
+        }
+        tail = new_node;
+        curr = curr->next;
+        track_count++;
+    }
+    return *this;
+        }   
+    
 void Playlist::add_track(AudioTrack* track) {
     if (!track) {
         std::cout << "[Error] Cannot add null track to playlist" << std::endl;
         return;
     }
-
     // Create new node - this allocates memory!
     PlaylistNode* new_node = new PlaylistNode(track);
-
-    // Add to front of list
-    new_node->next = head;
-    head = new_node;
+    if (!head) {
+        head = new_node;
+    } else {
+        PlaylistNode* current = head;
+        while (current->next) {
+            current = current->next;
+        }
+        current->next = new_node;
+    }
     track_count++;
-
     std::cout << "Added '" << track->get_title() << "' to playlist '" 
               << playlist_name << "'" << std::endl;
 }
@@ -49,6 +119,8 @@ void Playlist::remove_track(const std::string& title) {
         } else {
             head = current->next;
         }
+        delete current->track;
+        delete current;
 
         track_count--;
         std::cout << "Removed '" << title << "' from playlist" << std::endl;
