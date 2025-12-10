@@ -172,7 +172,7 @@ void DJSession::simulate_dj_performance() {
             }
         
      for(const auto& track_title : track_titles){
-        std::cout << "\n--- Processing: " << track_title << "---" << std::endl;
+        std::cout << "\n--- Processing: " << track_title << " ---" << std::endl;
         stats.tracks_processed++;
         int load_result = load_track_to_controller(track_title);
         if(load_result == -2){
