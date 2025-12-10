@@ -188,7 +188,7 @@ void DJSession::simulate_dj_performance() {
     }
      print_session_summary();
     }
-
+    stats = SessionStats();
     }
     else if(!play_all){
         while(true){
@@ -219,7 +219,9 @@ void DJSession::simulate_dj_performance() {
                 }
             }
             print_session_summary();
+    
         }
+         stats = SessionStats();
     }
     std::cout << "Session cancelled by user or all playlists played." << std::endl;
 }
